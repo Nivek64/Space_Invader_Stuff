@@ -3,7 +3,7 @@ from pygame.sprite import Sprite, Group
 from laser import Lasers
 from timer import Timer
 from random import Rand
-
+#comment
 
 class Alien(Sprite):
     alien_images = [pg.image.load(f'images/alienhead{n}.png') for n in range(4)]
