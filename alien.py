@@ -21,7 +21,7 @@ class Alien(Sprite):
         3: alien_images_3
     }
  
-    def __init__(self, settings, screen):
+    def __init__(self, settings, screen, n = random.randint(0,3)):
         super().__init__()
         self.image_choices = [pg.image.load('images/alienhead/alienhead0.png'),
         pg.image.load('images/aliententacles/aliententacles0.png'),
@@ -29,7 +29,7 @@ class Alien(Sprite):
         pg.image.load('images/alienfrog/alienfrog0.png')]
         self.screen = screen
         self.settings = settings
-        n = random.randint(0,3)
+       
         self.image = self.image_choices[n]
         self.rect = self.image.get_rect()
         self.rect.y = self.rect.height
@@ -86,20 +86,22 @@ class Aliens:
     def reset(self):
         self.aliens.empty()
         self.create_fleet()
-    def create_alien(self, alien_number, row_number):
-        alien = Alien(settings=self.settings, screen=self.screen)
+    def create_alien(self, alien_number, row_number,  n = random.randint(0,3)):
+        alien = Alien(settings=self.settings, screen=self.screen, n = n)
         alien_width = alien.rect.width
 
         alien.x = alien_width + 1.5 * alien_width * alien_number 
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 1 * alien.rect.height * row_number 
         self.aliens.add(alien)     
+
     def create_fleet(self):
         number_aliens_x = self.get_number_aliens_x(self.model_alien.rect.width) 
         number_rows = self.get_number_rows(self.ship.rect.height, self.model_alien.rect.height)
         for row_number in range(number_rows):
+            m = random.randint(0,3)
             for alien_number in range(number_aliens_x):
-                   self.create_alien(alien_number, row_number)
+                   self.create_alien(alien_number, row_number, n = m)
     def check_fleet_edges(self):
         for alien in self.aliens.sprites(): 
             if alien.check_edges():
