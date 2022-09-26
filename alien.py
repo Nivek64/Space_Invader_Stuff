@@ -2,54 +2,46 @@ import pygame as pg
 from pygame.sprite import Sprite, Group
 from laser import Lasers
 from timer import Timer
-from random import Rand
+import random
+
 #comment
 
 class Alien(Sprite):
-    alien_images = [pg.image.load(f'images/alienhead{n}.png') for n in range(4)]
-    alien_images_1 = [pg.image.load(f'images/aliententacles{n}.png') for n in range(4)]
-    alien_images_2 = [pg.image.load(f'images/alienslime{n}.png') for n in range(4)]
-    alien_images_3 = [pg.image.load(f'images/alienfrog{n}.png') for n in range(4)]
-    alien_images_4 = [pg.image.load(f'images/alienufo{n}.png') for n in range(8)]
-    alien_explosion_images = [pg.image.load(f'images/explode{n}.png') for n in range(7)]
     
+    alien_images = [pg.image.load(f'images/alienhead/alienhead{n}.png') for n in range(4)]
+    alien_images_1 = [pg.image.load(f'images/aliententacles/aliententacles{n}.png') for n in range(4)]
+    alien_images_2 = [pg.image.load(f'images/alienslime/alienslime{n}.png') for n in range(4)]
+    alien_images_3 = [pg.image.load(f'images/alienfrog/alienfrog{n}.png') for n in range(4)]
+    alien_explosion_images = [pg.image.load(f'images/explode{n}.png') for n in range(7)]
+
+    switchalienlist = {
+        0: alien_images,
+        1: alien_images_1,
+        2: alien_images_2,
+        3: alien_images_3
+    }
+ 
     def __init__(self, settings, screen):
         super().__init__()
+        self.image_choices = [pg.image.load('images/alienhead/alienhead0.png'),
+        pg.image.load('images/aliententacles/aliententacles0.png'),
+        pg.image.load('images/alienslime/alienslime0.png'),
+        pg.image.load('images/alienfrog/alienfrog0.png')]
         self.screen = screen
         self.settings = settings
-        
-        self.image = [pg.image.load('images/alienhead0.png'),
-                      pg.image.load('images/aliententacles0.png'),
-                      pg.image.load('images/alienslime0.png'),
-                      pg.image.load('images/alienfrog0.png'),
-                      pg.image.load('images/alienufo0.png')]
-
-        self.rect = [self.image.get_rect(),
-                     self.image_1.get_rect(),
-                     self.image_2.get_rect(),
-                     self.image_3.get_rect(),
-                     self.image_4.get_rect()]
-
-        self.rect.y = [ self.rect.height,
-                        self.rect_1.height,
-                        self.rect_2.height,
-                        self.rect_3.height,
-                        self.rect_4.height ]
-      
-        self.x = [ float(self.rect.x),
-                   float(self.rect_1.x),
-                   float(self.rect_2.x),
-                   float(self.rect_3.x),
-                   float(self.rect_4.x) ] 
-      
+        n = random.randint(0,3)
+        self.image = self.image_choices[n]
+        self.rect = self.image.get_rect()
+        self.rect.y = self.rect.height
+        self.x = float(self.rect.x)                                                                                    
         self.dying = self.dead = False
-        self.timer_normal = Timer(image_list=self.alien_images)
-        self.timer_normal = Timer(image_list=self.alien_images_1)
-        self.timer_normal = Timer(image_list=self.alien_images_2)        
-        self.timer_normal = Timer(image_list=self.alien_images_3)
-        self.timer_normal = Timer(image_list=self.alien_images_4)
+
+
+
+        self.timer_normal = Timer(image_list= self.switchalienlist[n])
+
         self.timer_explosion = Timer(image_list=self.alien_explosion_images, is_loop=False)  
-        self.timer = self.timer_normal                                    
+        self.timer = self.timer_normal                          
 
     def check_edges(self): 
         screen_rect = self.screen.get_rect()
