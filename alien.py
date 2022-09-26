@@ -36,8 +36,6 @@ class Alien(Sprite):
         self.x = float(self.rect.x)                                                                                    
         self.dying = self.dead = False
 
-
-
         self.timer_normal = Timer(image_list= self.switchalienlist[n])
 
         self.timer_explosion = Timer(image_list=self.alien_explosion_images, is_loop=False)  
