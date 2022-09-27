@@ -54,9 +54,10 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_coordin, y_coordin, offset_x)
 
-    
+    #When laser hits the Bunker
     def collision_checks(self):
-        collisions = pg.sprite.spritecollide(self.ship, self.blocks, True)  
+        #Work out some kinks on this line of code
+        collisions = pg.sprite.spritecollide(self.ship, self.blocks, True)  #Changing self.ship to something else
         if collisions:
             for block in collisions:
                 block.kill()
