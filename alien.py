@@ -12,7 +12,7 @@ class Alien(Sprite):
     alien_images_1 = [pg.image.load(f'images/aliententacles/aliententacles{n}.png') for n in range(4)]
     alien_images_2 = [pg.image.load(f'images/alienslime/alienslime{n}.png') for n in range(4)]
     alien_images_3 = [pg.image.load(f'images/alienfrog/alienfrog{n}.png') for n in range(4)]
-    alien_explosion_images = [pg.image.load(f'images/explode{n}.png') for n in range(7)]
+    alien_explosion_images = [pg.image.load(f'images/explosion/explosion{n}.png') for n in range(6)]
 
     switchalienlist = {
         0: alien_images,

@@ -54,6 +54,13 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_coordin, y_coordin, offset_x)
 
+    
+    def collision_checks(self):
+        collisions = pg.sprite.spritecollide(self.ship, self.blocks, True)  
+        if collisions:
+            for block in collisions:
+                block.kill()
+
     def reset(self):
         print('Resetting game...')
         self.lasers.reset()
@@ -76,6 +83,7 @@ class Game:
             self.aliens.update()
             self.lasers.update()
             self.scoreboard.update()
+            self.collision_checks()
             self.blocks.draw(self.screen)
             pg.display.flip()
 
