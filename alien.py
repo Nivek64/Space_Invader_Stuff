@@ -169,6 +169,12 @@ class Aliens:
             for alien in collisions:
                 alien.hit()
             self.sb.increment_score()
+    def attack_collisions(self):
+        collisions = pg.sprite.groupcollide(self.aliens, self.ship_lasers, False, True)  
+        if collisions:
+            for alien in collisions:
+                alien.hit()
+            self.sb.increment_score()
     def update(self): 
         self.check_fleet_edges()
         self.check_fleet_bottom()

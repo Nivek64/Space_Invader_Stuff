@@ -22,6 +22,8 @@ class Ship(Sprite):
 
         # self.lasers = Lasers(settings=self.settings)
         self.lasers = game.ship_lasers
+        self.attack_lasers = game.alien_lasers
+
 
         # self.lasers = lasers
         self.shooting = False
@@ -42,6 +44,11 @@ class Ship(Sprite):
         self.ships_left -= 1
         print(f'Ship is dead! Only {self.ships_left} ships left')
         self.game.reset() if self.ships_left > 0 else self.game.game_over()
+    def collision(self): #NOTE: DOES NOT WORK YET
+        for laser in self.attack_lasers.lasers:
+            gets_hit = pg.sprite.spritecollideany(self, self.attack_lasers.lasers)
+            if gets_hit:
+                self.die()
     def update(self):
         self.posn += self.vel
         self.posn, self.rect = clamp(self.posn, self.rect, self.settings)
@@ -51,5 +58,6 @@ class Ship(Sprite):
                 self.lasers.shoot(game=self.game, x = self.rect.centerx, y=self.rect.top)
         self.lasers.update()
         self.draw()
+        self.collision()
     def draw(self): 
         self.screen.blit(self.image, self.rect)

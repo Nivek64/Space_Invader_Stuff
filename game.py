@@ -55,8 +55,11 @@ class Game:
         #Work out some kinks on this line of code
         collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)  #Changing self.ship to something else
         collisions_2 = pg.sprite.groupcollide(self.blocks, self.alien_lasers.lasers, False, True)
-        if collisions or collisions_2:
+        if collisions:
             for block in collisions:
+                block.kill()
+        if collisions_2:
+            for block in collisions_2:
                 block.kill()
     
     def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
