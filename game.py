@@ -57,7 +57,7 @@ class Game:
     #When laser hits the Bunker
     def collision_checks(self):
         #Work out some kinks on this line of code
-        collisions = pg.sprite.spritecollide(self.ship, self.blocks, True)  #Changing self.ship to something else
+        collisions = pg.sprite.groupcollide(self.blocks, self.lasers.lasers, False, True)  #Changing self.ship to something else
         if collisions:
             for block in collisions:
                 block.kill()
