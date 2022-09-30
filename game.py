@@ -2,12 +2,12 @@ import pygame as pg
 from settings import Settings
 import game_functions as gf
 
-from laser import Lasers
+from laser import Lasers, LaserType
 from alien import Aliens
 from ship import Ship
-import obstacles
 from sound import Sound
 from scoreboard import Scoreboard
+import obstacles
 import sys
 
 
@@ -20,16 +20,15 @@ class Game:
         pg.display.set_caption("Alien Invasion")
 
         self.sound = Sound(bg_music="sounds/startrek.wav")
-
         self.scoreboard = Scoreboard(game=self)  
-        self.lasers = Lasers(settings=self.settings)
-        self.ship = Ship(game=self, screen=self.screen, settings=self.settings, sound=self.sound, lasers=self.lasers)
-        self.aliens = Aliens(game=self, screen=self.screen, settings=self.settings, lasers=self.lasers, ship=self.ship)
-        
 
-        # launch screen TODO
+        self.ship_lasers = Lasers(settings=self.settings, type=LaserType.SHIP)
+        self.alien_lasers = Lasers(settings=self.settings, type=LaserType.ALIEN)
         
-        #Making the obstacles object
+        self.ship = Ship(game=self)
+        self.aliens = Aliens(game=self)
+        self.settings.initialize_speed_settings()
+    #Going through shapes to make bunker at coordin
         self.shape = obstacles.shape
         self.block_size = 6
         self.blocks = pg.sprite.Group()
@@ -37,9 +36,6 @@ class Game:
         self.obstacle_x_positions = [num * (self.settings.screen_width / self.obstacle_amount) for num in range(self.obstacle_amount)]
         self.create_multiple_obstacles(*self.obstacle_x_positions, x_coordin = self.settings.screen_width / 15, y_coordin = 650)
 
-        self.settings.initialize_speed_settings()
-    
-    #Going through shapes to make bunker at coordin
     def create_obstacle(self, x_coordin, y_coordin, offset_x):
         for row_index, row in enumerate(self.shape):
             for col_index, col in enumerate(row):
@@ -57,14 +53,20 @@ class Game:
     #When laser hits the Bunker
     def collision_checks(self):
         #Work out some kinks on this line of code
-        collisions = pg.sprite.groupcollide(self.blocks, self.lasers.lasers, False, True)  #Changing self.ship to something else
-        if collisions:
+        collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)  #Changing self.ship to something else
+        collisions_2 = pg.sprite.groupcollide(self.blocks, self.alien_lasers.lasers, False, True)
+        if collisions or collisions_2:
             for block in collisions:
                 block.kill()
+    
+    def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
+        self.blocks.empty()
 
     def reset(self):
         print('Resetting game...')
-        self.lasers.reset()
+        self.block_reset()
+        # self.lasers.reset()
+        self.blocks.draw(self.screen) 
         self.ship.reset()
         self.aliens.reset()
         # self.scoreboard.reset()
@@ -82,10 +84,10 @@ class Game:
             self.screen.fill(self.settings.bg_color)
             self.ship.update()
             self.aliens.update()
-            self.lasers.update()
-            self.scoreboard.update()
             self.collision_checks()
-            self.blocks.draw(self.screen)
+            self.blocks.draw(self.screen)           
+            # self.lasers.update()
+            self.scoreboard.update()
             pg.display.flip()
 
 
