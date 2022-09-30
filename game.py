@@ -53,23 +53,27 @@ class Game:
     #When laser hits the Bunker
     def collision_checks(self):
         #Work out some kinks on this line of code
-        collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)  #Changing self.ship to something else
+        collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)
         collisions_2 = pg.sprite.groupcollide(self.blocks, self.alien_lasers.lasers, False, True)
+        collisions_3 = pg.sprite.groupcollide(self.alien_lasers.lasers, self.ship_lasers.lasers, False, True)
         if collisions:
             for block in collisions:
                 block.kill()
         if collisions_2:
             for block in collisions_2:
                 block.kill()
+        if collisions_3:
+            for lasers in collisions_3:
+                lasers.kill()
     
-    def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
-        self.blocks.empty()
+    #def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
+        #self.blocks.empty()
 
     def reset(self):
         print('Resetting game...')
-        self.block_reset()
+        #self.block_reset()
         # self.lasers.reset()
-        self.blocks.draw(self.screen) 
+        #self.blocks.draw(self.screen) 
         self.ship.reset()
         self.aliens.reset()
         # self.scoreboard.reset()
