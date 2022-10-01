@@ -1,9 +1,10 @@
 import pygame as pg
 from settings import Settings
 import game_functions as gf
+from random import choice, randint
 
 from laser import Lasers, LaserType
-from alien import Aliens
+from alien import Aliens, Ufo
 from ship import Ship
 from sound import Sound
 from scoreboard import Scoreboard
@@ -28,7 +29,12 @@ class Game:
         self.ship = Ship(game=self)
         self.aliens = Aliens(game=self)
         self.settings.initialize_speed_settings()
-    #Going through shapes to make bunker at coordin
+
+        #UFO stuff
+        self.ufo = pg.sprite.GroupSingle()
+        self.ufo_spawn_time = randint(400, 800)
+
+        #Going through shapes to make bunker at coordin
         self.shape = obstacles.shape
         self.block_size = 6
         self.blocks = pg.sprite.Group()
@@ -65,6 +71,12 @@ class Game:
         if collisions_3:
             for lasers in collisions_3:
                 lasers.kill()
+
+    def ufo_timer(self):
+        self.ufo_spawn_time -= 1
+        if self.ufo_spawn_time <= 0:
+            self.ufo.add(Ufo(choice(['right', 'left']), self.settings.screen_width))
+            self.ufo_spawn_time = randint(40, 80)
     
     #def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
         #self.blocks.empty()
@@ -91,8 +103,11 @@ class Game:
             self.screen.fill(self.settings.bg_color)
             self.ship.update()
             self.aliens.update()
+            self.ufo_timer()
+            self.ufo.update()
             self.collision_checks()
-            self.blocks.draw(self.screen)           
+            self.blocks.draw(self.screen)   
+            self.ufo.draw(self.screen)         
             # self.lasers.update()
             self.scoreboard.update()
             pg.display.flip()

@@ -75,6 +75,22 @@ class Alien(Sprite):
         self.screen.blit(image, rect)
         # self.screen.blit(self.image, self.rect) 
 
+class Ufo(Sprite):
+    def __init__(self, side, screen_width):
+        super().__init__()
+        self.alien_image = [pg.image.load(f'images/alienufo/alienufo{n}.png') for n in range(8)]
+        if side == 'right':
+            x = screen_width + 50
+            self.speed = -3
+        else:
+            x = -50
+            self.speed = 3
+
+        self.rect = self.alien_image.get_rect(topleft = (x, 80))
+    
+    def update(self):
+        self.rect.x += self.speed
+
 
 class Aliens:
     def __init__(self, game): 
