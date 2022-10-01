@@ -30,7 +30,7 @@ class Alien(Sprite):
                    2 : Timer(image_list=alien_images2)} 
                 #    3 : Timer(image_list=alien_images3)}    
 
-    alien_explosion_images = [pg.image.load(f'images/explode{n}.png') for n in range(7)]
+    alien_explosion_images = [pg.image.load(f'images/explosion/explosion{n}.png') for n in range(6)]
 
     def __init__(self, game, type):
         super().__init__()
@@ -74,6 +74,22 @@ class Alien(Sprite):
         rect.left, rect.top = self.rect.left, self.rect.top
         self.screen.blit(image, rect)
         # self.screen.blit(self.image, self.rect) 
+
+class Ufo(Sprite):
+    def __init__(self, side, screen_width):
+        super().__init__()
+        self.alien_image = [pg.image.load(f'images/alienufo/alienufo{n}.png') for n in range(8)]
+        if side == 'right':
+            x = screen_width + 50
+            self.speed = -3
+        else:
+            x = -50
+            self.speed = 3
+
+        self.rect = self.alien_image.get_rect(topleft = (x, 80))
+    
+    def update(self):
+        self.rect.x += self.speed
 
 
 class Aliens:

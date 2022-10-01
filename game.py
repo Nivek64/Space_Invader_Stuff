@@ -1,9 +1,10 @@
 import pygame as pg
 from settings import Settings
 import game_functions as gf
+from random import choice, randint
 
 from laser import Lasers, LaserType
-from alien import Aliens
+from alien import Aliens, Ufo
 from ship import Ship
 from sound import Sound
 from scoreboard import Scoreboard
@@ -28,7 +29,12 @@ class Game:
         self.ship = Ship(game=self)
         self.aliens = Aliens(game=self)
         self.settings.initialize_speed_settings()
-    #Going through shapes to make bunker at coordin
+
+        #UFO stuff
+        self.ufo = pg.sprite.GroupSingle()
+        self.ufo_spawn_time = randint(400, 800)
+
+        #Going through shapes to make bunker at coordin
         self.shape = obstacles.shape
         self.block_size = 6
         self.blocks = pg.sprite.Group()
@@ -53,23 +59,33 @@ class Game:
     #When laser hits the Bunker
     def collision_checks(self):
         #Work out some kinks on this line of code
-        collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)  #Changing self.ship to something else
+        collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)
         collisions_2 = pg.sprite.groupcollide(self.blocks, self.alien_lasers.lasers, False, True)
+        collisions_3 = pg.sprite.groupcollide(self.alien_lasers.lasers, self.ship_lasers.lasers, False, True)
         if collisions:
             for block in collisions:
                 block.kill()
         if collisions_2:
             for block in collisions_2:
                 block.kill()
+        if collisions_3:
+            for lasers in collisions_3:
+                lasers.kill()
+
+    def ufo_timer(self):
+        self.ufo_spawn_time -= 1
+        if self.ufo_spawn_time <= 0:
+            self.ufo.add(Ufo(choice(['right', 'left']), self.settings.screen_width))
+            self.ufo_spawn_time = randint(40, 80)
     
-    def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
-        self.blocks.empty()
+    #def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
+        #self.blocks.empty()
 
     def reset(self):
         print('Resetting game...')
-        self.block_reset()
+        #self.block_reset()
         # self.lasers.reset()
-        self.blocks.draw(self.screen) 
+        #self.blocks.draw(self.screen) 
         self.ship.reset()
         self.aliens.reset()
         # self.scoreboard.reset()
@@ -87,8 +103,11 @@ class Game:
             self.screen.fill(self.settings.bg_color)
             self.ship.update()
             self.aliens.update()
+            self.ufo_timer()
+            self.ufo.update()
             self.collision_checks()
-            self.blocks.draw(self.screen)           
+            self.blocks.draw(self.screen)   
+            self.ufo.draw(self.screen)         
             # self.lasers.update()
             self.scoreboard.update()
             pg.display.flip()
