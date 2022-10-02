@@ -1,16 +1,16 @@
+from multiprocessing.resource_sharer import stop
 import pygame as pg
 from settings import Settings
 import game_functions as gf
 from random import choice, randint
 
 from laser import Lasers, LaserType
-from alien import Aliens, Ufo
+from alien import Aliens
 from ship import Ship
 from sound import Sound
 from scoreboard import Scoreboard
 import obstacles
 import sys
-
 
 class Game:
     def __init__(self):
@@ -29,6 +29,7 @@ class Game:
         self.ship = Ship(game=self)
         self.aliens = Aliens(game=self)
         self.settings.initialize_speed_settings()
+        self.flag = False
 
         #UFO stuff
         self.ufo = pg.sprite.GroupSingle()
@@ -41,7 +42,21 @@ class Game:
         self.obstacle_amount = 4
         self.obstacle_x_positions = [num * (self.settings.screen_width / self.obstacle_amount) for num in range(self.obstacle_amount)]
         self.create_multiple_obstacles(*self.obstacle_x_positions, x_coordin = self.settings.screen_width / 15, y_coordin = 650)
+    
+    def drawmenu(self):
+        button = pg.image.load(f'images/button1.png')
+        menubg = pg.image.load(f'images/MenuBG.png')
+        x, y = pg.mouse.get_pos()
+        rect = button.get_rect(topleft = (x,y))
 
+        self.screen.blit(menubg, (1, 1))
+        self.screen.blit(button, (-50, 540))
+        for event in pg.event.get():
+            if (event.type == pg.MOUSEBUTTONDOWN):
+                if rect.collidepoint(pg.mouse.get_pos(x,y)):
+                    self.flag = True
+                    return
+                    
     def create_obstacle(self, x_coordin, y_coordin, offset_x):
         for row_index, row in enumerate(self.shape):
             for col_index, col in enumerate(row):
@@ -72,11 +87,11 @@ class Game:
             for lasers in collisions_3:
                 lasers.kill()
 
-    def ufo_timer(self):
-        self.ufo_spawn_time -= 1
-        if self.ufo_spawn_time <= 0:
-            self.ufo.add(Ufo(choice(['right', 'left']), self.settings.screen_width))
-            self.ufo_spawn_time = randint(40, 80)
+    #def ufo_timer(self):
+        #self.ufo_spawn_time -= 1
+        #if self.ufo_spawn_time <= 0:
+            #self.ufo.add(Ufo(choice(['right', 'left']), self.settings.screen_width))
+            #self.ufo_spawn_time = randint(40, 80)
     
     #def block_reset(self): # NOTE: need to fix so that it resets with each round!!!
         #self.blocks.empty()
@@ -96,26 +111,32 @@ class Game:
         pg.quit()
         sys.exit()
 
+
     def play(self):
         self.sound.play_bg()
-        while True:     # at the moment, only exits in gf.check_events if Ctrl/Cmd-Q pressed
-            gf.check_events(settings=self.settings, ship=self.ship)
+        while True:
             self.screen.fill(self.settings.bg_color)
-            self.ship.update()
-            self.aliens.update()
-            self.ufo_timer()
-            self.ufo.update()
-            self.collision_checks()
-            self.blocks.draw(self.screen)   
-            self.ufo.draw(self.screen)         
-            # self.lasers.update()
-            self.scoreboard.update()
+            self.drawmenu()
             pg.display.flip()
+            if self.flag == True:
+                break
+        while True:
+                gf.check_events(settings=self.settings, ship=self.ship)
+                self.screen.fill(self.settings.bg_color)
+                self.ship.update()
+                self.aliens.update()
+                #self.ufo_timer()
+                self.ufo.update()
+                self.collision_checks()
+                self.blocks.draw(self.screen)   
+                self.ufo.draw(self.screen)  
+                pg.display.flip()
+                    # self.lasers.update()
 
 
 def main():
-    g = Game()
-    g.play()
+        g = Game()
+        g.play()
 
 
 if __name__ == '__main__':
