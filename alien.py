@@ -165,13 +165,35 @@ class Aliens:
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 1.2 * alien.rect.height * row_number 
         self.aliens.add(alien)     
+        
     def create_fleet(self):
         number_aliens_x = self.get_number_aliens_x(self.model_alien.rect.width) 
         number_rows = self.get_number_rows(self.ship.rect.height, self.model_alien.rect.height)
+
+        type_flag = False
+        ufo_exists = False
+        column_space = False
+
         for row_number in range(number_rows):
-            m = random.randint(0,3)
+            
+            m = random.randint(0,4)
+            c = random.randint(0,number_aliens_x)
+
+            if m == 4:
+                ufo_exists = True
+                m = random.randint(0,3)
+            else:
+                ufo_exists = False
+
             for alien_number in range(number_aliens_x):
-                   self.create_alien(alien_number, row_number, type = m)
+                if ufo_exists:
+                    if c == alien_number:
+                        self.create_alien(alien_number, row_number, type = 4)
+                    elif c != alien_number: 
+                        self.create_alien(alien_number, row_number, type = m)
+                else:
+                    self.create_alien(alien_number, row_number, type = m)
+
     def check_fleet_edges(self):
         for alien in self.aliens.sprites(): 
             if alien.check_edges():
