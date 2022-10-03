@@ -50,7 +50,8 @@ class Game:
         rect = button.get_rect(topleft = (x,y))
 
         self.screen.blit(menubg, (1, 1))
-        self.screen.blit(button, (-50, 540))
+        self.screen.blit(button, (self.settings.screen_width - 730, 
+                                 self.settings.screen_height - 200))
         for event in pg.event.get():
             if (event.type == pg.MOUSEBUTTONDOWN):
                 if rect.collidepoint(pg.mouse.get_pos(x,y)):
@@ -117,6 +118,7 @@ class Game:
         self.sound.play_bg()
         while True:
             self.screen.fill(self.settings.bg_color)
+            self.scoreboard.update()
             self.drawmenu()
             pg.display.flip()
             if self.flag == True:
@@ -126,6 +128,7 @@ class Game:
                 self.screen.fill(self.settings.bg_color)
                 self.ship.update()
                 self.aliens.update()
+                self.scoreboard.update()
                 #self.ufo_timer()
                 self.ufo.update()
                 self.collision_checks()

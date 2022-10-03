@@ -23,6 +23,7 @@ class Alien(Sprite):
     alien_images1 = [pg.transform.rotozoom(pg.image.load(f'images/alienhead/alienhead{n}.png'), 0, 0.7) for n in range(4)]
     alien_images2 = [pg.transform.rotozoom(pg.image.load(f'images/alienslime/alienslime{n}.png'), 0, 0.7) for n in range(4)]
     alien_images3 = [pg.transform.rotozoom(pg.image.load(f'images/aliententacles/aliententacles{n}.png'), 0, 0.7) for n in range(4)]
+    altufo =        [pg.transform.rotozoom(pg.image.load(f'images/alienufo/alienufo{n}.png'), 0, 0.7) for n in range(7)]
 
     # alien_images3 = [pg.image.load(f'images/alien3{n}.bmp') for n in range(2)]
 
@@ -31,12 +32,14 @@ class Alien(Sprite):
         0: alien_images0,
         1: alien_images1,
         2: alien_images2,
-        3: alien_images3
+        3: alien_images3,
+        4: altufo
     } 
 
     alien_explosion_images = [pg.image.load(f'images/explosion/explosion{n}.png') for n in range(6)]
+    #ufo_explosion_images = [(pg.image.load(f'images/ufoexplodes/ufopoint{n}.png'), 0, 2.0) for n in range(2)]
 
-    def __init__(self, game, type = random.randint(0,3)):
+    def __init__(self, game, type):
         super().__init__()
         self.screen = game.screen
         self.settings = game.settings
@@ -49,7 +52,8 @@ class Alien(Sprite):
         # self.timer_normal = Timer(image_list=self.alien_types[type])
                       
         self.timer_normal = Timer(image_list = self.switchalienlist[type])             
-        self.timer_explosion = Timer(image_list=Alien.alien_explosion_images, is_loop=False)  
+        self.timer_explosion = Timer(image_list=Alien.alien_explosion_images, is_loop=False)
+        #self.timer_ufoexplodes = Timer(image_list = Alien.ufo_explosion_images, is_loop = False)
         self.timer = self.timer_normal                                    
 
     def check_edges(self): 
@@ -63,7 +67,7 @@ class Alien(Sprite):
             self.dying = True 
             self.timer = self.timer_explosion
     def update(self): 
-        if self.timer == self.timer_explosion and self.timer.is_expired():
+        if self.timer == (self.timer_explosion) and self.timer.is_expired():
             self.kill()
         settings = self.settings
         self.x += (settings.alien_speed_factor * settings.fleet_direction)
@@ -74,55 +78,6 @@ class Alien(Sprite):
         rect = image.get_rect()
         rect.left, rect.top = self.rect.left, self.rect.top
         self.screen.blit(image, rect)
-
-#class Ufo(Sprite):
-
-    #ufo_images = [pg.image.load(f'images/alienufo/alienufo{n}.png') for n in range(7)]
-    #ufo_explodes = [pg.image.load(f'images/explosion/explosion{n}.png') for n in range(6)]
-    
-    #def __init__(self, game, type):
-        #super().__init__()
-        #self.screen = game.screen
-        #self.settings = game.settings
-        #self.image = pg.image.load('images/alienufo.bmp')
-        #self.rect = self.image.get_rect()
-        #self.rect.y = self.rect.height
-        #self.x = float(self.rect.x)
-        #self.type = type
-        
-        #self.dying = self.dead = False
-        
-        # self.timer_normal = Timer(image_list=self.alien_images)   
-        # self.timer_normal = Timer(image_list=self.alien_types[type])
-                      
-        #self.timer_normal = Timer(image_list = Alien.ufo_images, is_loop=True)   
-        #self.timer_explosion = Timer(image_list=Alien.alien_explosion_images, is_loop=False)  
-        #self.timer = self.timer_normal        
-
-    def check_edges(self): 
-        screen_rect = self.screen.get_rect()
-        return self.rect.right >= screen_rect.right or self.rect.left <= 0
-    def check_bottom_or_ship(self, ship):
-        screen_rect = self.screen.get_rect()
-        return self.rect.bottom >= screen_rect.bottom or self.rect.colliderect(ship.rect)
-    def hit(self):
-        if not self.dying:
-            self.dying = True 
-            self.timer = self.timer_explosion
-    def update(self): 
-        if self.timer == self.timer_explosion and self.timer.is_expired():
-            self.kill()
-        settings = self.settings
-        self.x += (settings.alien_speed_factor * settings.fleet_direction)
-        self.rect.x = self.x
-        self.draw()
-    def draw(self): 
-        image = self.timer.image()
-        rect = image.get_rect()
-        rect.left, rect.top = self.rect.left, self.rect.top
-        self.screen.blit(image, rect)
-        # self.screen.blit(self.image, self.rect) 
-
 
 class Aliens:
     def __init__(self, game): 
