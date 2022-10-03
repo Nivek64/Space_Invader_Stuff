@@ -6,7 +6,7 @@ class Sound:
     def __init__(self, bg_music):
         pg.mixer.init()
         pg.mixer.music.load(bg_music)
-        pg.mixer.music.set_volume(0.1)
+        pg.mixer.music.set_volume(0.4)
         laser_sound = pg.mixer.Sound('sounds/laser.wav')
         gameover_sound = pg.mixer.Sound('sounds/gameover.wav')
         self.sounds = {'laser': laser_sound, 'gameover': gameover_sound}

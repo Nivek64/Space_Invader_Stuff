@@ -2,6 +2,7 @@ from ast import Or
 from email.headerregistry import HeaderRegistry
 import random
 import pygame as pg
+from sound import Sound
 from pygame.sprite import Sprite, Group
 from laser import Lasers
 from timer import Timer
@@ -19,9 +20,9 @@ class Alien(Sprite):
     # alien_images2 = [pg.image.load(f'images/alien2{n}.bmp') for n in range(2)]
 
     alien_images0 = [pg.transform.rotozoom(pg.image.load(f'images/alienfrog/alienfrog{n}.png'), 0, 0.7) for n in range(2)]
-    alien_images1 = [pg.transform.rotozoom(pg.image.load(f'images/alienhead/alienhead{n}.png'), 0, 0.7) for n in range(2)]
-    alien_images2 = [pg.transform.rotozoom(pg.image.load(f'images/alienslime/alienslime{n}.png'), 0, 0.7) for n in range(2)]
-    alien_images3 = [pg.transform.rotozoom(pg.image.load(f'images/aliententacles/aliententacles{n}.png'), 0, 0.7) for n in range(2)]
+    alien_images1 = [pg.transform.rotozoom(pg.image.load(f'images/alienhead/alienhead{n}.png'), 0, 0.7) for n in range(4)]
+    alien_images2 = [pg.transform.rotozoom(pg.image.load(f'images/alienslime/alienslime{n}.png'), 0, 0.7) for n in range(4)]
+    alien_images3 = [pg.transform.rotozoom(pg.image.load(f'images/aliententacles/aliententacles{n}.png'), 0, 0.7) for n in range(4)]
 
     # alien_images3 = [pg.image.load(f'images/alien3{n}.bmp') for n in range(2)]
 
@@ -73,7 +74,6 @@ class Alien(Sprite):
         rect = image.get_rect()
         rect.left, rect.top = self.rect.left, self.rect.top
         self.screen.blit(image, rect)
-        # self.screen.blit(self.image, self.rect) 
 
 #class Ufo(Sprite):
 
@@ -130,6 +130,7 @@ class Aliens:
         self.game = game
         self.sb = game.scoreboard
         self.aliens = Group()
+        self.sound = game.sound
 
         # self.ship_lasers = game.ship.lasers.lasers    # a laser Group
         # self.aliens_lasers = Lasers(settings=game.settings)
@@ -185,6 +186,13 @@ class Aliens:
         if len(self.aliens.sprites()) == 0:
             print('Aliens all gone!')
             self.game.reset()
+
+    #check the amount of aliens to change the bg_music
+    def check_fleet_amount(self):
+        if len(self.aliens.sprites()) == 50:
+            self.sound = Sound(bg_music="sounds/Speed_up_startrek.wav")
+            self.sound.play_bg()
+
     def change_fleet_direction(self):
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
@@ -228,6 +236,7 @@ class Aliens:
         self.check_fleet_bottom()
         self.check_collisions()
         self.check_fleet_empty()
+        self.check_fleet_amount()
         self.shoot_from_random_alien()
         for alien in self.aliens.sprites():
             if alien.dead:      # set True once the explosion animation has completed

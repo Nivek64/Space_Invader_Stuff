@@ -19,7 +19,7 @@ class Game:
         size = self.settings.screen_width, self.settings.screen_height   # tuple
         self.screen = pg.display.set_mode(size=size)
         pg.display.set_caption("Alien Invasion")
-
+        self.speed_sound = Sound(bg_music="sounds/Speed_up_startrek.wav")
         self.sound = Sound(bg_music="sounds/startrek.wav")
         self.scoreboard = Scoreboard(game=self)  
 
@@ -73,7 +73,6 @@ class Game:
 
     #When laser hits the Bunker
     def collision_checks(self):
-        #Work out some kinks on this line of code
         collisions = pg.sprite.groupcollide(self.blocks, self.ship_lasers.lasers, False, True)
         collisions_2 = pg.sprite.groupcollide(self.blocks, self.alien_lasers.lasers, False, True)
         collisions_3 = pg.sprite.groupcollide(self.alien_lasers.lasers, self.ship_lasers.lasers, False, True)
