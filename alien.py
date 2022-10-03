@@ -189,7 +189,7 @@ class Aliens:
 
     #check the amount of aliens to change the bg_music
     def check_fleet_amount(self):
-        if len(self.aliens.sprites()) == 50:
+        if len(self.aliens.sprites()) == 47:
             self.sound = Sound(bg_music="sounds/Speed_up_startrek.wav")
             self.sound.play_bg()
 

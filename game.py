@@ -102,6 +102,8 @@ class Game:
         #self.blocks.draw(self.screen) 
         self.ship.reset()
         self.aliens.reset()
+        self.sound = Sound(bg_music="sounds/startrek.wav")
+        self.sound.play_bg()
         # self.scoreboard.reset()
 
     def game_over(self):
